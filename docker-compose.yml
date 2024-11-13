@@ -1,0 +1,15 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: api-estagio
+    container_name: api-estagio-container
+
+    ports:
+      - "8080:80"
+   
+    volumes:
+      - .:/app
+   
