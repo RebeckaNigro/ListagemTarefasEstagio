@@ -1,7 +1,21 @@
 # Descrição
-Projeto de uma aplicação web de gerenciamento de tarefas. A aplicação permite aos usuários criar, editar, excluir e listar tarefas, além de fornecer uma interface intuitiva para busca e filtragem de tarefas. O backend foi desenvolvido em C# com ASP.NET, e o frontend utiliza HTML, CSS e JavaScript para fornecer uma interface dinâmica. Este projeto faz parte do processo seletivo para a vaga de estágio na StartUp SESI.
+Este é um projeto de uma aplicação web para o gerenciamento de tarefas. A aplicação permite aos usuários criar, editar, excluir e listar tarefas, com funcionalidades de busca e filtragem. O backend foi desenvolvido em C# com ASP.NET, enquanto o frontend utiliza HTML, CSS e JavaScript para uma interface dinâmica. Este projeto faz parte de um processo seletivo para a vaga de estágio na StartUp SESI.
 
+## Tecnologias Utilizadas
+- **Frontend**:
+  - **HTML5** e **CSS3** para estruturação e estilização.
+  - **JavaScript** para manipulação do DOM e integração com a API.
+  - **Bootstrap** para um design responsivo e componentes modernos.
+  
+- **Backend**:
+  - **C# com ASP.NET** para desenvolvimento de uma API RESTful.
+  - **Entity Framework Core** para integração com o banco de dados.
+  - **PostgreSQL** como banco de dados relacional.
+  - **Visual Studio 2022** para desenvolvimento.
+  
 ## Estrutura do Projeto
+
+Abaixo está a estrutura de diretórios do projeto, para facilitar a navegação:
 
 ```
 Lista-de-Tarefas
