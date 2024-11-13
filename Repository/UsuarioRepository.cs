@@ -1,4 +1,4 @@
-﻿using ListagemTarefasEstagio.Data;
+using ListagemTarefasEstagio.Data;
 using ListagemTarefasEstagio.Models;
 using ListagemTarefasEstagio.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,56 +7,58 @@ namespace ListagemTarefasEstagio.Repository
 {
     public class UsuarioRepository : IUsuarioRepositorio
     {
-        private readonly SistemadeTarefasDBContext _dbContext;
-        public UsuarioRepository(SistemadeTarefasDBContext sistemadeTarefasDBContext)
+        private readonly SistemadeTarefasDBContext _context;
+
+        public UsuarioRepository(SistemadeTarefasDBContext context)
         {
-            _dbContext = sistemadeTarefasDBContext;
-        }
-
-        public async Task<UsuarioModel> Adicionar(UsuarioModel usuario)
-        {
-            await _dbContext.Usuarios.AddAsync(usuario);
-            await _dbContext.SaveChangesAsync();
-            return usuario;
-        }
-
-        public async Task<bool>Apagar(int id)
-        {
-            UsuarioModel usuarioPorId = await BuscarPorId(id);
-            if (usuarioPorId == null)
-            {
-                throw new Exception($"Usuário para o ID:{id} Não foi encontrado no banco de dados.");
-            }
-            _dbContext.Usuarios.Remove(usuarioPorId);
-            await _dbContext.SaveChangesAsync();
-            return true;     
-        }
-
-        public async Task<UsuarioModel> Atualizar(UsuarioModel usuario, int id)
-        {
-            UsuarioModel usuarioPorId = await BuscarPorId(id);
-            if (usuarioPorId == null)
-            {
-                throw new Exception($"Usuário para o ID:{id} Não foi encontrado no banco de dados.");
-            }
-            usuarioPorId.Nome = usuario.Nome;
-            usuarioPorId.Email = usuario.Email;
-
-            _dbContext.Usuarios.Update(usuarioPorId);
-            await _dbContext.SaveChangesAsync();
-
-            return usuarioPorId;
-
-        }
-
-        public async Task<UsuarioModel> BuscarPorId(int id)
-        {
-            return await _dbContext.Usuarios.FirstOrDefaultAsync(x => x.Id == id);
+            _context = context; // Inicializa o contexto do banco de dados
         }
 
         public async Task<List<UsuarioModel>> BuscarTodosUsuarios()
         {
-            return await _dbContext.Usuarios.ToListAsync();
+            // Retorna todos os usuários do banco de dados
+            return await _context.Usuarios.Include(u => u.Tarefas).ToListAsync();
+        }
+
+        public async Task<UsuarioModel> BuscarPorId(int id)
+        {
+            // Busca um usuário específico pelo ID, incluindo suas tarefas associadas
+            return await _context.Usuarios.Include(u => u.Tarefas)
+                                          .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<UsuarioModel> Adicionar(UsuarioModel usuarioModel)
+        {
+            // Adiciona um novo usuário ao banco de dados
+            _context.Usuarios.Add(usuarioModel);
+            await _context.SaveChangesAsync(); // Salva as alterações no banco
+            return usuarioModel; // Retorna o usuário cadastrado
+        }
+
+        public async Task<UsuarioModel> Atualizar(UsuarioModel usuarioModel, int id)
+        {
+            // Atualiza os dados de um usuário existente no banco de dados
+            var usuarioExistente = await _context.Usuarios.FindAsync(id);
+            if (usuarioExistente != null)
+            {
+                usuarioExistente.Nome = usuarioModel.Nome;
+                usuarioExistente.Email = usuarioModel.Email;
+                await _context.SaveChangesAsync(); // Salva as alterações no banco
+            }
+            return usuarioExistente; // Retorna o usuário atualizado
+        }
+
+        public async Task<bool> Apagar(int id)
+        {
+            // Apaga um usuário do banco de dados
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario != null)
+            {
+                _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync(); // Salva as alterações no banco
+                return true; // Retorna true se o usuário foi apagado com sucesso
+            }
+            return false; // Retorna false se o usuário não foi encontrado
         }
     }
 }
