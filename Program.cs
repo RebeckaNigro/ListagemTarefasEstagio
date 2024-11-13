@@ -12,38 +12,36 @@ namespace ListagemTarefasEstagio
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Adiciona serviços ao contêiner.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddControllers(); // Adiciona suporte a controladores para a API
+            builder.Services.AddEndpointsApiExplorer(); // Configura a API para explorar endpoints
+            builder.Services.AddSwaggerGen(); // Adiciona suporte ao Swagger para documentação da API
+
             builder.Services.AddEntityFrameworkNpgsql()
                 .AddDbContext<SistemadeTarefasDBContext>(
                     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DataBase"))
-                );
+                ); // Configura o Entity Framework com o banco de dados PostgreSQL
 
-            builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepository>();
-            builder.Services.AddScoped<ITarefaRepositorio, TarefaRepository>();
+            builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepository>(); // Registra a injeção de dependência para IUsuarioRepositorio
+            builder.Services.AddScoped<ITarefaRepositorio, TarefaRepository>(); // Registra a injeção de dependência para ITarefaRepositorio
 
+            var app = builder.Build(); // Constroi a aplicação com as configurações especificadas
 
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
+            // Configura o pipeline de requisições HTTP.
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwagger(); // Habilita o Swagger no ambiente de desenvolvimento
+                app.UseSwaggerUI(); // Habilita a interface do Swagger para visualização da documentação
             }
 
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); // Redireciona para HTTPS
 
-            app.UseAuthorization();
+            app.UseAuthorization(); // Configura a autorização para a aplicação
 
+            app.MapControllers(); // Mapeia os controladores para os endpoints da API
 
-            app.MapControllers();
-
-            app.Run();
+            app.Run(); // Inicia a aplicação
         }
     }
 }
